@@ -32,7 +32,7 @@ import AdminOrders from "./pages/AdminOrders";
 import EditCar from "./pages/EditCar";
 import TestDriveBooking from "./pages/TestDriveBooking";
 import PageLoader from "./components/PageLoader";
-import AppLayout from "./components/AppLayout";
+import Layout from "./components/Layout";
 import ErrorBoundary from "./components/ErrorBoundary";
 import ListCar from "./pages/ListCar";
 
@@ -47,7 +47,7 @@ const App = () => (
         <BrowserRouter>
           <ErrorBoundary>
           <Routes>
-            <Route element={<AppLayout />}>
+            <Route element={<Layout />}>
               <Route path="/" element={<Index />} />
               <Route path="/signup" element={<SignUp />} />
               <Route path="/signin" element={<SignIn />} />

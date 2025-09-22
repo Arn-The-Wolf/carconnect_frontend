@@ -1,9 +1,8 @@
-import React from "react";
-import Navbar from "./Navbar";
-import Footer from "./Footer";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 import { Outlet } from "react-router-dom";
 
-const AppLayout: React.FC = () => {
+const Layout = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -15,6 +14,6 @@ const AppLayout: React.FC = () => {
   );
 };
 
-export default AppLayout;
+export default Layout;
 
 
