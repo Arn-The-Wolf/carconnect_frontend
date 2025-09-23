@@ -22,7 +22,11 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
-      <SEO title="CarConnect – Premium Car Marketplace" canonicalPath="/" />
+      <SEO
+        title="CarConnect – Premium Car Marketplace"
+        description="Discover luxury cars from top brands. Buy or sell your next vehicle on CarConnect."
+        canonicalPath="/"
+      />
       <Navbar />
       <HeroSection />
       <BrandSection />

@@ -129,7 +129,11 @@ const BuyCars = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-accent/20 to-primary/10 p-8">
-      <SEO title="Browse Cars – CarConnect" canonicalPath="/buy-cars" />
+      <SEO
+        title="Browse Cars – CarConnect"
+        description="Browse our collection of available cars. Filter by make, year, and more."
+        canonicalPath="/buy-cars"
+      />
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
