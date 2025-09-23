@@ -47,6 +47,8 @@ const AddCar = () => {
   });
   const [images, setImages] = useState<File[]>([]);
   const [video, setVideo] = useState<File | null>(null);
+  const MAX_IMAGES = 20;
+  const MAX_IMAGE_MB = 5;
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -60,19 +62,29 @@ const AddCar = () => {
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
-    if (files.length + images.length > 20) {
-      toast({
-        title: "Too many images",
-        description: "Maximum 20 images allowed",
-        variant: "destructive",
-      });
+    if (files.length === 0) return;
+    const remainingSlots = MAX_IMAGES - images.length;
+    if (remainingSlots <= 0) {
+      toast({ title: "Limit reached", description: `You can upload up to ${MAX_IMAGES} images.`, variant: "destructive" });
       return;
     }
-    setImages(prev => [...prev, ...files]);
+    const allowed = files
+      .filter(f => f.type.startsWith('image/'))
+      .filter(f => f.size <= MAX_IMAGE_MB * 1024 * 1024)
+      .slice(0, remainingSlots);
+    const rejectedCount = files.length - allowed.length;
+    if (rejectedCount > 0) {
+      toast({ title: "Some files skipped", description: `Only images up to ${MAX_IMAGE_MB}MB are allowed.`, variant: "destructive" });
+    }
+    if (allowed.length > 0) setImages(prev => [...prev, ...allowed]);
   };
 
   const handleVideoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    if (file && !file.type.startsWith('video/')) {
+      toast({ title: "Invalid file", description: "Please select a video file.", variant: "destructive" });
+      return;
+    }
     if (file && file.size > 50 * 1024 * 1024) {
       toast({
         title: "File too large",
@@ -82,6 +94,10 @@ const AddCar = () => {
       return;
     }
     setVideo(file || null);
+  };
+
+  const removeImageAt = (index: number) => {
+    setImages(prev => prev.filter((_, i) => i !== index));
   };
 
   const uploadFiles = async (carId: string) => {
@@ -99,25 +115,48 @@ const AddCar = () => {
 
     try {
       // Validate required fields
-      if (!formData.title || !formData.make || !formData.model || !formData.year || 
-          !formData.color || !formData.body_type || !formData.fuel_type || 
+      const currentYear = new Date().getFullYear() + 1;
+      const yearNum = parseInt(formData.year);
+      const priceNum = parseFloat(formData.price);
+      const mileageNum = parseInt(formData.mileage || '0');
+
+      if (!formData.title || !formData.make || !formData.model || !formData.year ||
+          !formData.color || !formData.body_type || !formData.fuel_type ||
           !formData.transmission || !formData.location || !formData.price) {
         toast({
           title: "Missing fields",
           description: "Please fill in all required fields",
           variant: "destructive",
         });
-        setIsLoading(false);
-        return;
+        return setIsLoading(false);
+      }
+
+      if (isNaN(yearNum) || yearNum < 1900 || yearNum > currentYear) {
+        toast({ title: "Invalid year", description: `Year must be between 1900 and ${currentYear}.`, variant: "destructive" });
+        return setIsLoading(false);
+      }
+      if (isNaN(priceNum) || priceNum <= 0) {
+        toast({ title: "Invalid price", description: "Price must be greater than zero.", variant: "destructive" });
+        return setIsLoading(false);
+      }
+      if (!isNaN(mileageNum) && mileageNum < 0) {
+        toast({ title: "Invalid mileage", description: "Mileage cannot be negative.", variant: "destructive" });
+        return setIsLoading(false);
+      }
+      if (formData.rent_enabled) {
+        if (!formData.rent_price_per_day) {
+          toast({ title: "Missing rent price", description: "Please provide rent price per day.", variant: "destructive" });
+          return setIsLoading(false);
+        }
       }
 
       // Create car record via backend API
       const carData = {
         make: formData.make,
         model: formData.model,
-        year: parseInt(formData.year),
-        price: parseFloat(formData.price),
-        mileage: parseInt(formData.mileage) || 0,
+        year: yearNum,
+        price: priceNum,
+        mileage: mileageNum || 0,
         fuelType: formData.fuel_type,
         transmission: formData.transmission,
         condition: formData.condition,
@@ -548,17 +587,26 @@ const AddCar = () => {
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="images">Photos (Max 20, 5MB each)</Label>
+                <Label htmlFor="images">Photos (Max {MAX_IMAGES}, {MAX_IMAGE_MB}MB each)</Label>
                 <Input
                   id="images"
                   type="file"
                   multiple
-                  accept="image/jpeg,image/png,image/jpg"
+                  accept="image/*"
                   onChange={handleImageUpload}
                   className="search-input"
                 />
                 {images.length > 0 && (
-                  <p className="text-sm text-muted-foreground">{images.length} image(s) selected</p>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                    {images.map((f, i) => (
+                      <div key={i} className="relative border rounded p-2 text-xs truncate">
+                        {f.name}
+                        <button type="button" className="absolute top-1 right-1 text-red-500" onClick={() => removeImageAt(i)}>
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                 )}
               </div>
 
