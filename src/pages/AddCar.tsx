@@ -120,6 +120,7 @@ const AddCar = () => {
         mileage: parseInt(formData.mileage) || 0,
         fuelType: formData.fuel_type,
         transmission: formData.transmission,
+        condition: formData.condition,
         status: 'available',
         description: formData.description,
         location: formData.location,

@@ -102,6 +102,7 @@ class ApiService {
     status?: string;
     sellEnabled?: boolean;
     rentEnabled?: boolean;
+    condition?: string;
   }) {
     const searchParams = new URLSearchParams();
     if (params?.page) searchParams.append('page', params.page.toString());
@@ -110,6 +111,7 @@ class ApiService {
     if (params?.status) searchParams.append('status', params.status);
     if (typeof params?.sellEnabled === 'boolean') searchParams.append('sellEnabled', String(params.sellEnabled));
     if (typeof params?.rentEnabled === 'boolean') searchParams.append('rentEnabled', String(params.rentEnabled));
+    if (params?.condition) searchParams.append('condition', params.condition);
 
     const queryString = searchParams.toString();
     return this.request(`/cars${queryString ? `?${queryString}` : ''}`);

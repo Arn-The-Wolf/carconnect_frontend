@@ -46,7 +46,10 @@ const ExploreSection = () => {
       const response = await api.getCars({
         status: 'available',
         page: 1,
-        limit: 8
+        limit: 8,
+        sellEnabled: true,
+        ...(activeTab === 'new-cars' ? { condition: 'New' } : {}),
+        ...(activeTab === 'used-cars' ? { condition: 'Used' } : {}),
       });
 
       if (response.data?.items) {
