@@ -1,7 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import LoadingSpinner from '@/components/LoadingSpinner';
-import Navbar from '@/components/Navbar';
 import SEO from '@/components/SEO';
 import HeroSection from '@/components/HeroSection';
 import BrandSection from '@/components/BrandSection';
@@ -27,7 +26,6 @@ const Index = () => {
         description="Discover luxury cars from top brands. Buy or sell your next vehicle on CarConnect."
         canonicalPath="/"
       />
-      <Navbar />
       <HeroSection />
       <BrandSection />
       <div className="container mx-auto px-4 py-6 flex justify-end">
@@ -39,7 +37,6 @@ const Index = () => {
       <AboutSection />
       <FeaturesSection />
       <PopularMakesSection />
-      <Footer />
     </div>
   );
 };
