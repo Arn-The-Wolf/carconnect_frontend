@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -49,6 +49,15 @@ const AddCar = () => {
   const [video, setVideo] = useState<File | null>(null);
   const MAX_IMAGES = 20;
   const MAX_IMAGE_MB = 5;
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+
+  useEffect(() => {
+    const urls = images.map(f => URL.createObjectURL(f));
+    setImagePreviews(urls);
+    return () => {
+      urls.forEach(u => URL.revokeObjectURL(u));
+    };
+  }, [images]);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -588,22 +597,35 @@ const AddCar = () => {
             <CardContent className="space-y-6">
               <div className="space-y-2">
                 <Label htmlFor="images">Photos (Max {MAX_IMAGES}, {MAX_IMAGE_MB}MB each)</Label>
-                <Input
-                  id="images"
-                  type="file"
-                  multiple
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  className="search-input"
-                />
+                <div
+                  className="mt-1 border-2 border-dashed border-border rounded-lg p-4 text-center hover:bg-accent/30 transition-colors"
+                  onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                  onDrop={(e) => { e.preventDefault(); handleImageUpload({ target: { files: e.dataTransfer.files } } as any); }}
+                >
+                  <Input
+                    id="images"
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="search-input"
+                  />
+                  <p className="text-sm text-muted-foreground mt-2">Drag & drop images here or use the picker above</p>
+                </div>
                 {images.length > 0 && (
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 mt-3">
                     {images.map((f, i) => (
-                      <div key={i} className="relative border rounded p-2 text-xs truncate">
-                        {f.name}
-                        <button type="button" className="absolute top-1 right-1 text-red-500" onClick={() => removeImageAt(i)}>
-                          ×
+                      <div key={i} className="relative group">
+                        <img src={imagePreviews[i]} alt={f.name} className="w-full h-28 object-cover rounded border" />
+                        <button
+                          type="button"
+                          aria-label="Remove image"
+                          className="absolute top-1 right-1 bg-red-600 text-white text-xs rounded px-1.5 py-0.5 opacity-90 group-hover:opacity-100"
+                          onClick={() => removeImageAt(i)}
+                        >
+                          Remove
                         </button>
+                        <div className="mt-1 text-xs truncate text-muted-foreground">{f.name}</div>
                       </div>
                     ))}
                   </div>
