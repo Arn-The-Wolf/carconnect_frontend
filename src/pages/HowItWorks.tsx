@@ -213,12 +213,12 @@ const HowItWorks = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/buy-cars">
-                <Button size="lg" className="bg-white text-primary hover:bg-white/90">
+                <Button size="lg" className="bg-white text-primary hover:bg-white/90 transition-transform duration-200 hover:scale-105 hover:shadow-lg">
                   Start Buying
                 </Button>
               </Link>
               <Link to="/list-car?tab=sell">
-                <Button size="lg" variant="outline" className="text-white border-white hover:bg-white hover:text-primary">
+                <Button size="lg" className="bg-blue-700 text-white hover:bg-blue-800 transition-transform duration-200 hover:scale-105 hover:shadow-lg">
                   Start Selling
                 </Button>
               </Link>
