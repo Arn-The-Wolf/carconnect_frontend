@@ -1,6 +1,7 @@
 import React from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import { Link } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -211,12 +212,16 @@ const HowItWorks = () => {
               Join thousands of satisfied customers who have successfully bought and sold cars through CarConnect.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-white text-primary hover:bg-white/90">
-                Start Buying
-              </Button>
-              <Button size="lg" variant="outline" className="text-white border-white hover:bg-white hover:text-primary">
-                Start Selling
-              </Button>
+              <Link to="/buy-cars">
+                <Button size="lg" className="bg-white text-primary hover:bg-white/90">
+                  Start Buying
+                </Button>
+              </Link>
+              <Link to="/list-car?tab=sell">
+                <Button size="lg" variant="outline" className="text-white border-white hover:bg-white hover:text-primary">
+                  Start Selling
+                </Button>
+              </Link>
             </div>
           </div>
         </div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -41,6 +41,26 @@ const SellCarTab = () => {
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  // Upload state & refs
+  const [images, setImages] = useState<File[]>([]);
+  const [video, setVideo] = useState<File | null>(null);
+  const imageInputRef = useRef<HTMLInputElement | null>(null);
+  const videoInputRef = useRef<HTMLInputElement | null>(null);
+
+  const onSelectImages = (files: FileList | null) => {
+    if (!files) return;
+    const selected = Array.from(files).filter(f => f.type.startsWith('image/'));
+    setImages(prev => [...prev, ...selected].slice(0, 20));
+  };
+
+  const onSelectVideo = (files: FileList | null) => {
+    if (!files) return;
+    const file = Array.from(files)[0];
+    if (!file) return;
+    if (!file.type.startsWith('video/')) return;
+    setVideo(file);
   };
 
   const formatPrice = (price) => {
@@ -300,24 +320,63 @@ const SellCarTab = () => {
         {/* Image Upload */}
         <div className="mt-6">
           <Label>Upload Photos (Max 20 images, 5MB each)</Label>
-          <div className="mt-2 border-2 border-dashed border-border rounded-lg p-8 text-center">
+          <div
+            className="mt-2 border-2 border-dashed border-border rounded-lg p-8 text-center cursor-pointer"
+            onClick={() => imageInputRef.current?.click()}
+            onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }}
+            onDrop={(e) => { e.preventDefault(); onSelectImages(e.dataTransfer.files); }}
+          >
             <Upload className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
             <p className="text-muted-foreground">Drag and drop images here, or click to browse</p>
-            <Button variant="outline" className="mt-4">
+            <Button variant="outline" className="mt-4" onClick={() => imageInputRef.current?.click()} type="button">
               Select Images
             </Button>
+            <input
+              ref={imageInputRef}
+              type="file"
+              accept="image/*"
+              multiple
+              className="hidden"
+              onChange={(e) => onSelectImages(e.target.files)}
+            />
+            {images.length > 0 && (
+              <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                {images.map((file, idx) => (
+                  <div key={idx} className="rounded border p-2 text-xs truncate">
+                    {file.name}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
         {/* Video Upload */}
         <div className="mt-6">
           <Label>Upload Video (Optional, Max 50MB)</Label>
-          <div className="mt-2 border-2 border-dashed border-border rounded-lg p-6 text-center">
+          <div
+            className="mt-2 border-2 border-dashed border-border rounded-lg p-6 text-center cursor-pointer"
+            onClick={() => videoInputRef.current?.click()}
+            onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }}
+            onDrop={(e) => { e.preventDefault(); onSelectVideo(e.dataTransfer.files); }}
+          >
             <Car className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
             <p className="text-muted-foreground text-sm">Add a video walkthrough of your car</p>
-            <Button variant="outline" size="sm" className="mt-2">
+            <Button variant="outline" size="sm" className="mt-2" type="button" onClick={() => videoInputRef.current?.click()}>
               Select Video
             </Button>
+            <input
+              ref={videoInputRef}
+              type="file"
+              accept="video/*"
+              className="hidden"
+              onChange={(e) => onSelectVideo(e.target.files)}
+            />
+            {video && (
+              <div className="mt-3 text-xs truncate">
+                {video.name}
+              </div>
+            )}
           </div>
         </div>
 
