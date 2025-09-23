@@ -1,5 +1,4 @@
 import React from 'react';
-import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Link } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
@@ -82,7 +81,6 @@ const HowItWorks = () => {
 
   return (
     <div className="min-h-screen">
-      <Navbar />
       
       {/* Hero Section */}
       <section className="py-20 bg-gradient-to-r from-primary to-primary-dark text-white">
@@ -227,7 +225,7 @@ const HowItWorks = () => {
         </div>
       </section>
       
-      <Footer />
+      {/* Footer rendered by Layout */}
     </div>
   );
 };

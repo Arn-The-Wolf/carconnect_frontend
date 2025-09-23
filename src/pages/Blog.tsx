@@ -1,5 +1,4 @@
 import React from 'react';
-import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -51,7 +50,6 @@ const Blog = () => {
 
   return (
     <div className="min-h-screen">
-      <Navbar />
       
       {/* Hero Section */}
       <section className="py-16 bg-gradient-to-r from-primary to-primary-dark text-white">
@@ -134,7 +132,7 @@ const Blog = () => {
         </div>
       </section>
       
-      <Footer />
+      {/* Footer rendered by Layout */}
     </div>
   );
 };

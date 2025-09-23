@@ -1,5 +1,4 @@
 import React from 'react';
-import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -70,7 +69,6 @@ const Services = () => {
 
   return (
     <div className="min-h-screen">
-      <Navbar />
       
       {/* Hero Section */}
       <section className="py-20 bg-gradient-to-r from-primary to-primary-dark text-white">
@@ -168,7 +166,7 @@ const Services = () => {
         </div>
       </section>
       
-      <Footer />
+      {/* Footer rendered by Layout */}
     </div>
   );
 };
