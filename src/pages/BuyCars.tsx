@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import SEO from '@/components/SEO';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -128,6 +129,7 @@ const BuyCars = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-accent/20 to-primary/10 p-8">
+      <SEO title="Browse Cars – CarConnect" canonicalPath="/buy-cars" />
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">

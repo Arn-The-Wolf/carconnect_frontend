@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import Navbar from '@/components/Navbar';
+import SEO from '@/components/SEO';
 import HeroSection from '@/components/HeroSection';
 import BrandSection from '@/components/BrandSection';
 import ExploreSection from '@/components/ExploreSection';
@@ -21,6 +22,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
+      <SEO title="CarConnect – Premium Car Marketplace" canonicalPath="/" />
       <Navbar />
       <HeroSection />
       <BrandSection />
