@@ -29,6 +29,7 @@ interface Car {
 const ExploreSection = () => {
   const [cars, setCars] = useState<Car[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('in-stock');
   const { ref, inView } = useInView({
     triggerOnce: true,
@@ -43,6 +44,7 @@ const ExploreSection = () => {
   const fetchCars = async () => {
     try {
       setLoading(true);
+      setError(null);
       const response = await api.getCars({
         status: 'available',
         page: 1,
@@ -60,6 +62,7 @@ const ExploreSection = () => {
     } catch (error) {
       console.error('Error fetching cars:', error);
       setCars([]);
+      setError('Failed to load vehicles. Please try again later.');
     } finally {
       setLoading(false);
     }
@@ -84,6 +87,18 @@ const ExploreSection = () => {
               <div key={i} className="h-80 bg-muted rounded-lg animate-pulse"></div>
             ))}
           </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="py-16 bg-muted/50">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl font-bold mb-2">Explore All Vehicles</h2>
+          <p className="text-muted-foreground mb-6">{error}</p>
+          <Button onClick={fetchCars}>Retry</Button>
         </div>
       </section>
     );
@@ -115,7 +130,14 @@ const ExploreSection = () => {
           ))}
         </div>
 
-        <div className={`flex gap-6 overflow-x-auto pb-4 transition-all duration-700 delay-200 ${inView ? 'animate-slide-up' : 'opacity-0'}`}>
+        {cars.length === 0 ? (
+          <div className="text-center py-12">
+            <h3 className="text-lg font-semibold mb-2">No vehicles found</h3>
+            <p className="text-muted-foreground mb-6">Please check back later or browse all cars.</p>
+            <Button onClick={() => navigate('/buy-cars')}>Browse All Cars</Button>
+          </div>
+        ) : (
+          <div className={`flex gap-6 overflow-x-auto pb-4 transition-all duration-700 delay-200 ${inView ? 'animate-slide-up' : 'opacity-0'}`}>
           {cars.map((car) => (
             <Card key={car._id} className="flex-shrink-0 w-80 overflow-hidden group cursor-pointer">
               <div className="relative">
@@ -171,7 +193,8 @@ const ExploreSection = () => {
               </CardContent>
             </Card>
           ))}
-        </div>
+          </div>
+        )}
       </div>
     </section>
   );

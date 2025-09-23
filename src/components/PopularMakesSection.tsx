@@ -29,6 +29,7 @@ interface Car {
 const PopularMakesSection = () => {
   const [cars, setCars] = useState<Car[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [activeMake, setActiveMake] = useState('audi');
   const [currentPage, setCurrentPage] = useState(0);
   const { ref, inView } = useInView({
@@ -50,6 +51,7 @@ const PopularMakesSection = () => {
   const fetchCars = async () => {
     try {
       setLoading(true);
+      setError(null);
       const response = await api.getCars({
         status: 'available',
         page: 1,
@@ -65,6 +67,7 @@ const PopularMakesSection = () => {
     } catch (error) {
       console.error('Error fetching cars:', error);
       setCars([]);
+      setError('Failed to load popular makes.');
     } finally {
       setLoading(false);
     }
@@ -110,6 +113,11 @@ const PopularMakesSection = () => {
             {[...Array(2)].map((_, i) => (
               <div key={i} className="h-64 bg-muted rounded-lg animate-pulse"></div>
             ))}
+          </div>
+        ) : error ? (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground mb-4">{error}</p>
+            <Button onClick={fetchCars}>Retry</Button>
           </div>
         ) : (
           <div className={`grid grid-cols-1 md:grid-cols-2 gap-8 transition-all duration-700 delay-400 ${inView ? 'animate-zoom-in' : 'opacity-0'}`}>
